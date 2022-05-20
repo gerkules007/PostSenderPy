@@ -1,16 +1,22 @@
-# This is a sample Python script.
+import token_config
+import asyncio
+from aiogram import Bot, Dispatcher, types
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+BOT_TOKEN = token_config.t
 
+async def start_handler(event: types.Message):
+    await event.answer(
+        f"Hello, {event.from_user.get_mention(as_html=True)} 👋!",
+        parse_mode=types.ParseMode.HTML,
+    )
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+async def main():
+    bot = Bot(token=BOT_TOKEN)
+    try:
+        disp = Dispatcher(bot=bot)
+        disp.register_message_handler(start_handler, commands={"start", "restart"})
+        await disp.start_polling()
+    finally:
+        await bot.close()
 
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+asyncio.run(main())
