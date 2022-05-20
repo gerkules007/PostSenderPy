@@ -1,14 +1,14 @@
-from aiogram import Bot, Dispatcher
+from aiogram import Bot, Dispatcher, executor
 from Telegram.Comands import *
 import token_config
 
 
 bot = Bot(token=token_config.t)
+dp: Dispatcher = Dispatcher(bot=bot)
 
-async def tbot_controller():
-    try:
-        disp = Dispatcher(bot=bot)
-        disp.register_message_handler(start_handler, commands={"start", "restart"})
-        await disp.start_polling()
-    finally:
-        await bot.close()
+dp.register_message_handler(send_welcome, commands={"start", "restart"})
+
+
+def tbot_controller():
+    executor.start_polling(dp, skip_updates=True)
+
